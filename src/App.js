@@ -7,8 +7,10 @@ class TodoList extends React.Component {
     return (
       <ul>
         {this.props.items.map(item => (
-          <div>
-            <li key={item.id}>{item.text}
+          <div key={item.id}>
+            <li>
+              <input type="checkbox" />
+              {item.text}
               <button onClick={() => this.props.remove(item.id)}>
               X
               </button>
@@ -26,6 +28,7 @@ class App extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.removeItem = this.removeItem.bind(this);
+    this.removeCompleted = this.removeCompleted.bind(this);
     this.state = {items: [], text: ''};
   }
 
@@ -33,11 +36,12 @@ class App extends Component {
     return (
       <div>
         <h3>TODO</h3>
-        <TodoList items={this.state.items} remove={this.removeItem}/>
         <form onSubmit={this.handleSubmit}>
           <input onChange={this.handleChange} value={this.state.text} />
           <button>{'Add #' + (this.state.items.length + 1)}</button>
         </form>
+        <TodoList items={this.state.items} remove={this.removeItem}/>
+        <button>Remove Completed</button>
       </div>
     );
   }
@@ -50,6 +54,7 @@ class App extends Component {
     e.preventDefault();
     var newItem = {
       text: this.state.text,
+      completed: false,
       id: Date.now()
     };
     this.setState((prevState) => ({
@@ -61,6 +66,12 @@ class App extends Component {
   removeItem(id) {
     this.setState((prevState) => ({
       items: prevState.items.filter(item => item.id !== id)
+    }));
+  }
+
+  removeCompleted() {
+    this.setState((prevState) => ({
+      items: prevState.items.filter(item => !item.completed)
     }));
   }
 }
